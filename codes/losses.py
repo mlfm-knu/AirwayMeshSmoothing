@@ -149,7 +149,9 @@ def ver_fac_loss(pos: Union[torch.Tensor, np.ndarray], norm: Union[torch.Tensor,
         pos = torch.from_numpy(pos)
     if type(norm) == np.ndarray:
         norm = torch.from_numpy(norm).to(pos.device)
+    #fc: centroid
     fc = torch.sum(pos[mesh.faces], 1) / 3.0
+    #pc: position differences between each vertex in a face and the face centroid
     pc = pos[mesh.faces] - fc.reshape(-1, 1, 3)
     dot_f2v = torch.abs(torch.sum(pc * norm.reshape(-1, 1, 3), dim=2))
     mat_vals = dot_f2v.reshape(-1)

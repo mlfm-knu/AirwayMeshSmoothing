@@ -20,9 +20,9 @@ class Dataset:
         self.edge_index = data['edge_index']
         self.face_index = data['face_index']
 
+
 def create_dataset(file_path: str) -> Tuple[dict, Dataset]:
-    # create mesh 
-    mesh_dic = {}
+    mesh_dic = {} #store mesh-related information
     n_file = glob.glob(file_path + '/*_noise.obj')[0]
     s_file = glob.glob(file_path + '/*_smooth.obj')[0]
     mesh_name = n_file.split('/')[-2]
@@ -30,63 +30,31 @@ def create_dataset(file_path: str) -> Tuple[dict, Dataset]:
     gt_file = glob.glob(file_path + '/*_gt.obj')
     if len(gt_file) != 0:
         gt_file = gt_file[0]
-        gt_mesh = Mesh(gt_file)
+        gt_mesh = Mesh(gt_file) #GT file
     else:
         gt_mesh = None
 
-    n_mesh = Mesh(n_file)
+    n_mesh = Mesh(n_file)#noise file
     o1_mesh = Mesh(n_file)
-    s_mesh = Mesh(s_file)
+    s_mesh = Mesh(s_file)#smooth file
 
     # create graph 
-    pos_initialization = "rand16"  #["rand6", "rand16", "pos_rand", "norm_rand", "pos_norm"]
-    if pos_initialization == "rand6":
-        np.random.seed(314)
-        z1 = np.random.normal(size=(n_mesh.vs.shape[0], 6))
-    elif pos_initialization == "rand16":
-        np.random.seed(314)
-        z1 = np.random.normal(size=(n_mesh.vs.shape[0], 16))
-    elif pos_initialization == "pos_rand":
-        np.random.seed(314)
-        z1_rand = np.random.normal(size=(n_mesh.vs.shape[0], 3))
-    elif pos_initialization == "norm_rand":
-        np.random.seed(314)
-        z1_rand = np.random.normal(size=(n_mesh.vs.shape[0], 3))
-        z1 = np.concatenate([s_mesh.vn, z1_rand], axis=1)
-    elif pos_initialization == "pos_norm":
-        z1 = np.concatenate([s_mesh.vs, s_mesh.vn], axis=1)
-    else:
-        print("error")
+    np.random.seed(314)
+    # z1 = np.random.normal(size=(n_mesh.vs.shape[0], 6)) #random noise vector
+    #3D coordinates of a position concatenated with the 3D normal vector
+    z1 = np.concatenate([s_mesh.vs, s_mesh.vn], axis=1)
 
-    norm_initialization = "pos_norm_area" #["rand6", "rand16", "pos_rand", "norm_rand", "pos_norm", "pos_norm_area"]
-    if norm_initialization == "rand6":
-        np.random.seed(314)
-        z2 = np.random.normal(size=(n_mesh.fn.shape[0], 6))
-    elif norm_initialization == "rand16":
-        np.random.seed(314)
-        z2 = np.random.normal(size=(n_mesh.fn.shape[0], 16))
-    elif norm_initialization == "pos_rand":
-        np.random.seed(314)
-        z2_rand = np.random.normal(size=(n_mesh.fn.shape[0], 3))
-        z2 = np.concatenate([n_mesh.fc, z2_rand], axis=1)
-    elif norm_initialization == "norm_rand":
-        np.random.seed(314)
-        z2_rand = np.random.normal(size=(n_mesh.fn.shape[0], 3))
-        z2 = np.concatenate([n_mesh.fn, z2_rand], axis=1)
-    elif norm_initialization == "pos_norm":
-        z2 = np.concatenate([n_mesh.fc, n_mesh.fn], axis=1)
-    elif norm_initialization == "pos_norm_area":
-        z2 = np.concatenate([n_mesh.fc, n_mesh.fn, n_mesh.fa.reshape(-1, 1)], axis=1)
-    else:
-        print("error")
+    np.random.seed(314)
+    # z2 = np.random.normal(size=(n_mesh.fn.shape[0], 6))
+    z2 = np.concatenate([n_mesh.fc, n_mesh.fn], axis=1)
 
     z1, z2 = torch.tensor(z1, dtype=torch.float, requires_grad=True), torch.tensor(z2, dtype=torch.float, requires_grad=True)
 
-    x_pos = torch.tensor(s_mesh.vs, dtype=torch.float)
-    x_norm = torch.tensor(n_mesh.fn, dtype=torch.float)
+    x_pos = torch.tensor(s_mesh.vs, dtype=torch.float) #vertex position 
+    x_norm = torch.tensor(n_mesh.fn, dtype=torch.float) #face normals
 
-    edge_index = torch.tensor(n_mesh.edges.T, dtype=torch.long)
-    edge_index = torch.cat([edge_index, edge_index[[1,0],:]], dim=1)
+    edge_index = torch.tensor(n_mesh.edges.T, dtype=torch.long) 
+    edge_index = torch.cat([edge_index, edge_index[[1,0],:]], dim=1) #the connectivity between vertices
     face_index = torch.from_numpy(n_mesh.f_edges).long()
 
     # create dataset 

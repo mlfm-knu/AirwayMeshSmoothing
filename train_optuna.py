@@ -30,66 +30,8 @@ class GNNVer(nn.Module):
         super(GNNVer, self).__init__()
         self.device = device
         
-        feu = [16, 32, 64, 128, 256, 256, 512, 512, 256, 256, 128, 64, 32, 16, 3]
+        feu = [6, 32, 64, 128, 256, 256, 512, 512, 256, 256, 128, 64, 32, 32, 16, 3]     
         neuron1 = trial.suggest_categorical("neuron1", [8, 16, 28, 32])
-
-        self.conv1  = GCNConv(feu[0], feu[1]) 
-        self.conv2  = GCNConv(feu[1], feu[2])
-        self.conv3  = GCNConv(feu[2], feu[3])
-        self.conv4  = GCNConv(feu[3], feu[4])
-        self.conv5  = GCNConv(feu[4], feu[5])
-        self.conv6  = GCNConv(feu[5], feu[6])
-        self.conv7  = GCNConv(feu[6], feu[7])
-        self.conv8  = GCNConv(feu[7], feu[8])
-        self.conv9  = GCNConv(feu[8], feu[9])
-        self.conv10 = GCNConv(feu[9], feu[10])
-        self.conv11 = GCNConv(feu[10], feu[11])
-        self.conv12 = GCNConv(feu[11], feu[12])
-        
-        self.linear1 = nn.Linear(feu[12], neuron1) 
-        self.linear2 = nn.Linear(neuron1, feu[14])
-    
-        self.bn1 = nn.BatchNorm1d(feu[1])
-        self.bn2 = nn.BatchNorm1d(feu[2])
-        self.bn3 = nn.BatchNorm1d(feu[3])
-        self.bn4 = nn.BatchNorm1d(feu[4])
-        self.bn5 = nn.BatchNorm1d(feu[5])
-        self.bn6 = nn.BatchNorm1d(feu[6])
-        self.bn7 = nn.BatchNorm1d(feu[7])
-        self.bn8 = nn.BatchNorm1d(feu[8])
-        self.bn9 = nn.BatchNorm1d(feu[9])
-        self.bn10 = nn.BatchNorm1d(feu[10])
-        self.bn11 = nn.BatchNorm1d(feu[11])
-        self.bn12 = nn.BatchNorm1d(feu[12])
-        self.l_relu = nn.LeakyReLU()
-            
-    def forward(self, data):
-        z1, x_pos, edge_index = data.z1.to(self.device), data.x_pos.to(self.device), data.edge_index.to(self.device)
-        dx = self.l_relu(self.bn1(self.conv1(z1, edge_index)))
-        dx = self.l_relu(self.bn2(self.conv2(dx, edge_index)))
-        dx = self.l_relu(self.bn3(self.conv3(dx, edge_index)))
-        dx = self.l_relu(self.bn4(self.conv4(dx, edge_index)))
-        dx = self.l_relu(self.bn5(self.conv5(dx, edge_index)))
-        dx = self.l_relu(self.bn6(self.conv6(dx, edge_index)))
-        dx = self.l_relu(self.bn7(self.conv7(dx, edge_index)))
-        dx = self.l_relu(self.bn8(self.conv8(dx, edge_index)))
-        dx = self.l_relu(self.bn9(self.conv9(dx, edge_index)))
-        dx = self.l_relu(self.bn10(self.conv10(dx, edge_index)))
-        dx = self.l_relu(self.bn11(self.conv11(dx, edge_index)))
-        dx = self.l_relu(self.bn12(self.conv12(dx, edge_index)))
-        
-        dx = self.l_relu(self.linear1(dx))
-        dx = self.linear2(dx)
-        
-        return x_pos + dx
-
-class GNNFac(nn.Module):
-    def __init__(self, device, trial: optuna.Trial):
-        super(GNNFac, self).__init__()
-        self.device = device
-        
-        feu = [7, 32, 64, 128, 256, 256, 512, 512, 256, 256, 128, 64, 32, 16, 3]
-        neuron1 = trial.suggest_categorical("neuron2", [8, 16, 28, 32])
 
         self.conv1  = GCNConv(feu[0], feu[1])
         self.conv2  = GCNConv(feu[1], feu[2])
@@ -98,14 +40,14 @@ class GNNFac(nn.Module):
         self.conv5  = GCNConv(feu[4], feu[5])
         self.conv6  = GCNConv(feu[5], feu[6])
         self.conv7  = GCNConv(feu[6], feu[7])
-        self.conv8  = GCNConv(feu[7], feu[8])
-        self.conv9  = GCNConv(feu[8], feu[9])
-        self.conv10 = GCNConv(feu[9], feu[10])
-        self.conv11 = GCNConv(feu[10], feu[11])
-        self.conv12 = GCNConv(feu[11], feu[12])
-
-        self.linear1 = nn.Linear(feu[12], neuron1)
-        self.linear2 = nn.Linear(neuron1, feu[14])
+        self.conv8  = GCNConv(feu[7]+feu[6], feu[8])
+        self.conv9  = GCNConv(feu[8]+feu[5], feu[9])
+        self.conv10 = GCNConv(feu[9]+feu[4], feu[10])
+        self.conv11 = GCNConv(feu[10]+feu[3], feu[11])
+        self.conv12 = GCNConv(feu[11]+feu[2], feu[12])
+        self.conv13 = GCNConv(feu[12]+feu[1], feu[13])
+        self.linear1 = nn.Linear(feu[13], neuron1)
+        self.linear2 = nn.Linear(neuron1, feu[15])
     
         self.bn1 = nn.BatchNorm1d(feu[1])
         self.bn2 = nn.BatchNorm1d(feu[2])
@@ -119,6 +61,79 @@ class GNNFac(nn.Module):
         self.bn10 = nn.BatchNorm1d(feu[10])
         self.bn11 = nn.BatchNorm1d(feu[11])
         self.bn12 = nn.BatchNorm1d(feu[12])
+        self.bn13 = nn.BatchNorm1d(feu[13])
+        self.l_relu = nn.LeakyReLU()
+            
+    def forward(self, data):
+        z1, x_pos, edge_index = data.z1.to(self.device), data.x_pos.to(self.device), data.edge_index.to(self.device)
+        dx = self.l_relu(self.bn1(self.conv1(z1, edge_index)))
+        skip1 = dx
+        dx = self.l_relu(self.bn2(self.conv2(dx, edge_index)))
+        skip2 = dx
+        dx = self.l_relu(self.bn3(self.conv3(dx, edge_index)))
+        skip3 = dx
+        dx = self.l_relu(self.bn4(self.conv4(dx, edge_index)))
+        skip4 = dx
+        dx = self.l_relu(self.bn5(self.conv5(dx, edge_index)))
+        skip5 = dx
+        dx = self.l_relu(self.bn6(self.conv6(dx, edge_index)))
+        skip6 = dx
+        dx = self.l_relu(self.bn7(self.conv7(dx, edge_index)))
+        dx = torch.cat([dx, skip6], dim=1)
+        dx = self.l_relu(self.bn8(self.conv8(dx, edge_index)))
+        dx = torch.cat([dx, skip5], dim=1)
+        dx = self.l_relu(self.bn9(self.conv9(dx, edge_index)))
+        dx = torch.cat([dx, skip4], dim=1)
+        dx = self.l_relu(self.bn10(self.conv10(dx, edge_index)))
+        dx = torch.cat([dx, skip3], dim=1)
+        dx = self.l_relu(self.bn11(self.conv11(dx, edge_index)))
+        dx = torch.cat([dx, skip2], dim=1)
+        dx = self.l_relu(self.bn12(self.conv12(dx, edge_index)))
+        dx = torch.cat([dx, skip1], dim=1)
+        dx = self.l_relu(self.bn13(self.conv13(dx, edge_index)))
+
+        dx = self.l_relu(self.linear1(dx))
+        dx = self.linear2(dx)    
+        
+        return x_pos + dx
+
+class GNNFac(nn.Module):
+    def __init__(self, device, trial: optuna.Trial):
+        super(GNNFac, self).__init__()
+        self.device = device
+        
+        feu = [6, 32, 64, 128, 256, 256, 512, 512, 256, 256, 128, 64, 32, 32, 16, 3]     
+        neuron2 = trial.suggest_categorical("neuron2", [8, 16, 28, 32])
+
+        self.conv1  = GCNConv(feu[0], feu[1])
+        self.conv2  = GCNConv(feu[1], feu[2])
+        self.conv3  = GCNConv(feu[2], feu[3])
+        self.conv4  = GCNConv(feu[3], feu[4])
+        self.conv5  = GCNConv(feu[4], feu[5])
+        self.conv6  = GCNConv(feu[5], feu[6])
+        self.conv7  = GCNConv(feu[6], feu[7])
+        self.conv8  = GCNConv(feu[7]+feu[6], feu[8])
+        self.conv9  = GCNConv(feu[8]+feu[5], feu[9])
+        self.conv10 = GCNConv(feu[9]+feu[4], feu[10])
+        self.conv11 = GCNConv(feu[10]+feu[3], feu[11])
+        self.conv12 = GCNConv(feu[11]+feu[2], feu[12])
+        self.conv13 = GCNConv(feu[12]+feu[1], feu[13])
+        self.linear1 = nn.Linear(feu[13], neuron2)
+        self.linear2 = nn.Linear(neuron2, feu[15])
+        
+        self.bn1 = nn.BatchNorm1d(feu[1])
+        self.bn2 = nn.BatchNorm1d(feu[2])
+        self.bn3 = nn.BatchNorm1d(feu[3])
+        self.bn4 = nn.BatchNorm1d(feu[4])
+        self.bn5 = nn.BatchNorm1d(feu[5])
+        self.bn6 = nn.BatchNorm1d(feu[6])
+        self.bn7 = nn.BatchNorm1d(feu[7])
+        self.bn8 = nn.BatchNorm1d(feu[8])
+        self.bn9 = nn.BatchNorm1d(feu[9])
+        self.bn10 = nn.BatchNorm1d(feu[10])
+        self.bn11 = nn.BatchNorm1d(feu[11])
+        self.bn12 = nn.BatchNorm1d(feu[12])
+        self.bn13 = nn.BatchNorm1d(feu[13])
 
         self.l_relu = nn.LeakyReLU()            
 
@@ -126,18 +141,31 @@ class GNNFac(nn.Module):
 
         z2, x_pos, face_index = data.z2.to(self.device), data.x_pos.to(self.device), data.face_index.to(self.device)
         dx = self.l_relu(self.bn1(self.conv1(z2, face_index)))
+        skip1 = dx
         dx = self.l_relu(self.bn2(self.conv2(dx, face_index)))
+        skip2 = dx
         dx = self.l_relu(self.bn3(self.conv3(dx, face_index)))
+        skip3 = dx
         dx = self.l_relu(self.bn4(self.conv4(dx, face_index)))
+        skip4 = dx
         dx = self.l_relu(self.bn5(self.conv5(dx, face_index)))
+        skip5 = dx
         dx = self.l_relu(self.bn6(self.conv6(dx, face_index)))
+        skip6 = dx
         dx = self.l_relu(self.bn7(self.conv7(dx, face_index)))
+        dx = torch.cat([dx, skip6], dim=1)
         dx = self.l_relu(self.bn8(self.conv8(dx, face_index)))
+        dx = torch.cat([dx, skip5], dim=1)
         dx = self.l_relu(self.bn9(self.conv9(dx, face_index)))
+        dx = torch.cat([dx, skip4], dim=1)
         dx = self.l_relu(self.bn10(self.conv10(dx, face_index)))
+        dx = torch.cat([dx, skip3], dim=1)
         dx = self.l_relu(self.bn11(self.conv11(dx, face_index)))
+        dx = torch.cat([dx, skip2], dim=1)
         dx = self.l_relu(self.bn12(self.conv12(dx, face_index)))
-        
+        dx = torch.cat([dx, skip1], dim=1)
+        dx = self.l_relu(self.bn13(self.conv13(dx, face_index))) 
+
         dx = self.l_relu(self.linear1(dx))
         dx = torch.tanh(self.linear2(dx))
 
@@ -232,13 +260,13 @@ def optuna_model(trial):
                 new_ver = ver.to("cpu").detach().numpy().copy()
                 o1_mesh.vs = new_ver
                 Mesh.compute_face_normals(o1_mesh)
-                Mesh.compute_vert_normals(o1_mesh)
+                Mesh.compute_ver_normals(o1_mesh)
 
                 aae_value = Losses.aae(o1_mesh.fn, gt_mesh.fn)
-                # o_path = input_model + "/output_tuning_optuna/" + str(epoch) + "_amsl={:.3f}.obj".format(aae_value)
+                o_path = input_model + "/output_tuning_optuna/" + str(epoch) + "_amsl={:.3f}.obj".format(aae_value)
                 aae_value_min.append(aae_value)
                 aae_value_min1 = np.min(aae_value_min)
-                # Mesh.save(o1_mesh, o_path)                
+                Mesh.save(o1_mesh, o_path)                
 
                 if vs_update:
                     updated_pos = Losses.vertex_updating(ver, fac, o1_mesh, loop=15)
@@ -258,7 +286,7 @@ def main():
     # Run Optuna
     start=time.time()
     study = optuna.create_study(study_name="Hyperparameter_Optimization_block", direction='minimize')
-    study.optimize(optuna_model, n_trials=2)
+    study.optimize(optuna_model, n_trials=1)
     print('It takes %s minutes' % ((time.time() - start)/60))
 
     study.best_params
