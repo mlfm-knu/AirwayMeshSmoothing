@@ -1,5 +1,5 @@
 # Airway mesh smoothing 
-**This repository contains codes for the mesh (random shapes of meshes airway meshes) smoothing using graph-convolutional neural networks.**
+**This repository contains codes for smoothing airway surface meshes with irregular shapes using graph-convolutional neural networks.**
 
 ## Files
 The repository contains the following files:
@@ -17,7 +17,6 @@ The repository contains the following files:
     - > python trainAirway.py "<path_to_save_data>" 
 * **Evaluation:** The trained file will output the smoothed meshes and the average angular errors. Airway meshes are evaluated based on diameters.
 
-
 ## Dependencies
 The code requires the following Python libraries:
 
@@ -33,11 +32,29 @@ The code requires the following Python libraries:
 * 'pymeshlab'
 * 'tqdm'
 
-
 ## License
-This code is released under the MLFM Lab.
-Some codes in this repository are modified from Dual deep mesh prior.
-Paper: "Graph-Convolutional Neural Network-based Surface Mesh Smoothing for Human Airways".
+Apache License
+Version 2.0, January 2004
+http://www.apache.org/licenses/
+
+### Additional Information
+- This program is registered software (Copyright Registration No. C-2023-026549, Korea Copyright Commission).
+- Certain parts of the algorithm are protected under Patent No. 10-2759618 (KIPO).
+- Copyright (c) 2024 MLFM Lab, in Kyungpook National University.
+- Some codes in this repository are modified from Dual deep mesh prior.
+
+Licensed under the Apache License, Version 2.0 (the "License");  
+you may not use this file except in compliance with the License.  
+You may obtain a copy of the License at  
+
+http://www.apache.org/licenses/LICENSE-2.0  
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,  
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  
+See the License for the specific language governing permissions and limitations under the License.
+
+## Citation & Acknowledgment
+If you use this code for your research, please cite the following paper:"Ho TT, Tran MT, Cui X, Lin C-L, Baek S, Kim WJ, Lee CH, Jin GY, Chae KJ, Choi S, Human-airway surface mesh smoothing based on graph convolutional neural networks, https://doi.org/10.1016/j.cmpb.2024.108061"
 
 
 
