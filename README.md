@@ -40,7 +40,7 @@ http://www.apache.org/licenses/
 ### Additional Information
 - This program is registered software (Copyright Registration No. C-2023-026549, Korea Copyright Commission).
 - Certain parts of the algorithm are protected under Patent No. 10-2759618 (KIPO).
-- Copyright (c) 2024 MLFM Lab, in Kyungpook National University.
+- Copyright (c) 2024 MLFM Lab, Kyungpook National University.
 - Some codes in this repository are modified from Dual deep mesh prior.
 
 Licensed under the Apache License, Version 2.0 (the "License");  
@@ -54,7 +54,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and limitations under the License.
 
 ## Citation & Acknowledgment
-If you use this code for your research, please cite the following paper:"Ho TT, Tran MT, Cui X, Lin C-L, Baek S, Kim WJ, Lee CH, Jin GY, Chae KJ, Choi S, Human-airway surface mesh smoothing based on graph convolutional neural networks, https://doi.org/10.1016/j.cmpb.2024.108061"
+If you use this code for your research, please cite the following paper:
+>"Ho TT, Tran MT, Cui X, Lin C-L, Baek S, Kim WJ, Lee CH, Jin GY, Chae KJ, Choi S,
+>Human-airway surface mesh smoothing based on graph convolutional neural networks,
+>https://doi.org/10.1016/j.cmpb.2024.108061"
+
 
 
 
